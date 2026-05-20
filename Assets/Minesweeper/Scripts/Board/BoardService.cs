@@ -83,10 +83,9 @@ namespace Minesweeper.Board
             openResults.Add(new CellOpenResult(cellIndex, minesNearby));
 
             if (minesNearby == 0)
-            {
                 OpenAllFreeCellsNearby(nearbyCells);
-                listPool.Release(nearbyCells);
-            }
+
+            listPool.Release(nearbyCells);
 
             return openResults;
         }

@@ -35,7 +35,7 @@ namespace Minesweeper.Entry
 
         private void Start()
         {
-            var cellShuffler = new CellShuffler(DateTime.UtcNow.Millisecond);
+            var cellShuffler = new CellShuffler(Guid.NewGuid().GetHashCode());
 
             var boardService = new BoardService(cellShuffler);
             disposables.Push(boardService);
@@ -44,6 +44,7 @@ namespace Minesweeper.Entry
             disposables.Push(cellFactory);
 
             var board = new BoardPresenter(boardService, boardGridView, cellFactory, visualConfig);
+            disposables.Push(board);
             var timer = new GameTimer(timerView);
 
             var mineCounter = new MineCounterPresenter(board, mineCounterView);

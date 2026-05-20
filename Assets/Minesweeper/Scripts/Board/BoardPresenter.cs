@@ -75,11 +75,7 @@ namespace Minesweeper.Board
 
         public void Dispose()
         {
-            for (int i = 0; i < cellViews.Length; i++)
-            {
-                CellView cellView = cellViews[i];
-                cellView.OnClick -= CellClicked;
-            }
+            CleanupCells();
         }
 
         private void CellClicked(MouseClickType click, int index)
@@ -140,14 +136,6 @@ namespace Minesweeper.Board
         private void HandleCellClick(int index)
         {
             Cell cell = service.GetCell(index);
-
-            if (!firstClickPerformed)
-            {
-                firstClickPerformed = true;
-
-                if (cell.HasMine)
-                    service.MoveMineToFreeCell(index);
-            }
 
             if (cell.State == CellState.Opened)
                 return;
@@ -212,6 +200,7 @@ namespace Minesweeper.Board
                 for (int i = 0; i < cellViews.Length; i++)
                 {
                     var view = cellViews[i];
+                    view.OnClick -= CellClicked;
                     cellFactory.Release(view);
                 }
             }
