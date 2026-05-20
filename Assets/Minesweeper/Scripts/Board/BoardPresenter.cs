@@ -83,8 +83,12 @@ namespace Minesweeper.Board
             switch (click)
             {
                 case MouseClickType.Left:
-                    HandleFirstClick(index);
-                    HandleCellClick(index);
+                    Cell cell = service.GetCell(index);
+                    if (cell.State is CellState.WrongMark or CellState.Marked)
+                        return;
+
+                    HandleFirstClick(cell, index);
+                    HandleCellClick(cell, index);
                     break;
 
                 case MouseClickType.Right:
@@ -118,13 +122,11 @@ namespace Minesweeper.Board
             }
         }
 
-        private void HandleFirstClick(int index)
+        private void HandleFirstClick(Cell cell, int index)
         {
             if (!firstClickPerformed)
             {
                 firstClickPerformed = true;
-
-                Cell cell = service.GetCell(index);
 
                 if (cell.HasMine)
                     service.MoveMineToFreeCell(index);
@@ -133,10 +135,8 @@ namespace Minesweeper.Board
             }
         }
 
-        private void HandleCellClick(int index)
+        private void HandleCellClick(Cell cell, int index)
         {
-            Cell cell = service.GetCell(index);
-
             if (cell.State == CellState.Opened)
                 return;
 

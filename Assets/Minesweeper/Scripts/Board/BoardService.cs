@@ -176,7 +176,7 @@ namespace Minesweeper.Board
 
                 ref var cell = ref cells[cellIndex];
 
-                if (cell.HasMine || cell.State == CellState.Marked)
+                if (cell.HasMine || cell.State == CellState.WrongMark)
                     continue;
 
                 cell.State = CellState.Opened;
