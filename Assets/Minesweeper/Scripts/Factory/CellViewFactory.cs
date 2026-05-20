@@ -21,7 +21,13 @@ namespace Minesweeper.Board
         }
 
         public CellView Create() => pool.Get();
-        public void Release(CellView view) => pool.Release(view);
+
+        public void Release(CellView view)
+        {
+            if (view != null)
+                pool.Release(view);
+        }
+
         public void Dispose() => pool.Dispose();
     }
 }
