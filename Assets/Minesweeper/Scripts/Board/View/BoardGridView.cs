@@ -6,14 +6,13 @@ namespace Minesweeper.View
     public class BoardGridView : MonoBehaviour
     {
         [SerializeField] private FlexibleGridLayout grid;
-        [field: SerializeField] public Transform Root { get; private set; }
+        [field: SerializeField] public RectTransform Root { get; private set; }
 
-        public void SetupGrid(int width, int height)
-        {  
-            grid.columns = width;
-            grid.rows = height;
+        public void SetupGrid(int rows, int col)
+        {
+            grid.cellSize.x = Root.sizeDelta.y / rows;
+            grid.columns = col;
+            grid.rows = rows;
         }
-
-        public void EnableGrid(bool enable) => grid.enabled = enable;
     }
 }

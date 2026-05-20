@@ -6,15 +6,21 @@ namespace Minesweeper.States
     {
         private readonly IStateSwitcher stateSwitcher;
         private readonly MainMenuScreenView view;
+        private readonly GameplayScreen gameplayScreen;
 
-        public MainMenuState(IStateSwitcher stateSwitcher, MainMenuScreenView view)
+        public MainMenuState(
+            IStateSwitcher stateSwitcher, 
+            MainMenuScreenView view, 
+            GameplayScreen gameplayScreen)
         {
             this.stateSwitcher = stateSwitcher;
             this.view = view;
+            this.gameplayScreen = gameplayScreen;
         }
 
         public void Enter()
         {
+            gameplayScreen.Hide();
             view.StartBttn.onClick.AddListener(StartGame);
             view.Show();
         }

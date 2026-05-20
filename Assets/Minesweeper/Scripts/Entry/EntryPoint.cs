@@ -56,9 +56,10 @@ namespace Minesweeper.Entry
 
             stateMachine = new GameStateMachine(context);
             stateMachine
-                .RegisterState(GameStateType.MainMenu, new MainMenuState(stateMachine, mainMenu))
+                .RegisterState(GameStateType.MainMenu, new MainMenuState(stateMachine, mainMenu, gameplayScreen))
                 .RegisterState(GameStateType.GameplayInitialization,
                     new GameplayInitializationState(stateMachine, board, config, context, timer, mineCounter))
+
                 .RegisterState(GameStateType.GameplayReady, new GameplayReadyState(stateMachine, board, gameplayScreen, topPanel))
                 .RegisterState(GameStateType.Gameplay, new GameplayState(stateMachine, board, timer, context, topPanel, gameplayScreen))
                 .RegisterState(GameStateType.Pause, new PauseGameState(stateMachine, pauseScreen, context))
@@ -70,10 +71,7 @@ namespace Minesweeper.Entry
             disposables.Push(stateMachine);
         }
 
-        private void Update()
-        {
-            stateMachine.Update(Time.deltaTime);
-        }
+        private void Update() => stateMachine.Update(Time.deltaTime);
 
         private void OnDestroy()
         {

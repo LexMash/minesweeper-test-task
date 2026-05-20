@@ -16,4 +16,3 @@ MonoBehaviour:
   Columns: 9
   MinesAmount: 10
   MaxMinesPercentage: 0.5
-  CellPrefab: {fileID: 7196469242635925514, guid: 95b6f732a05a4be40968634cf520b46c, type: 3}

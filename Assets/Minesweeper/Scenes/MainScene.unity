@@ -1794,17 +1794,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UserInterfaceGridLayout.FlexibleGridLayout
   m_Padding:
-    m_Left: 2
-    m_Right: 2
-    m_Top: 2
-    m_Bottom: 2
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
   m_ChildAlignment: 4
   fitType: 3
   rows: 9
   columns: 0
-  cellSize: {x: NaN, y: NaN}
+  cellSize: {x: 40, y: 40}
   spacing: {x: 0, y: 0}
-  fitX: 1
+  fitX: 0
   fitY: 1
   keepCellsSquare: 1
   fillFirst: 0
