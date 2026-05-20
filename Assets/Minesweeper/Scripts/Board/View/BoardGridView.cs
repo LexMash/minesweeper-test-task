@@ -11,8 +11,8 @@ namespace Minesweeper.View
         public void SetupGrid(int rows, int col)
         {
             grid.cellSize.x = Root.sizeDelta.y / rows;
-            grid.columns = col;
             grid.rows = rows;
+            grid.columns = col; 
         }
     }
 }

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d363500df47fb94082e898354d98a2b, type: 3}
   m_Name: GameConfig
   m_EditorClassIdentifier: Assembly-CSharp::Minesweeper.Configs.GameConfig
-  Rows: 9
-  Columns: 9
+  Rows: 19
+  Columns: 11
   MinesAmount: 10
   MaxMinesPercentage: 0.5

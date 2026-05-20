@@ -1,7 +1,6 @@
 ﻿using Minesweeper.Randomizer;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine.Pool;
 
 namespace Minesweeper.Board
@@ -21,8 +20,8 @@ namespace Minesweeper.Board
         private readonly ICellShuffler shuffler;
 
         private Cell[] cells;     
-        private int width;
-        private int height;
+        private int cols;
+        private int rows;
         private int mines;
 
         public BoardService(ICellShuffler shuffler)
@@ -38,10 +37,10 @@ namespace Minesweeper.Board
             this.shuffler = shuffler;
         }
 
-        public void Setup(int width, int height, int mines)
+        public void Setup(int rows, int cols, int mines)
         {
-            this.width = width;
-            this.height = height;
+            this.cols = cols;
+            this.rows = rows;
             this.mines = mines;
 
             cells = CreateNewCells();
@@ -146,8 +145,8 @@ namespace Minesweeper.Board
 
         private void SetNearbyCellsToList(int cellIndex, List<int> list)
         {
-            int row = cellIndex / width;
-            int col = cellIndex % width;
+            int row = cellIndex / cols;
+            int col = cellIndex % cols;
 
             for (int i = 0; i < MAX_CELLS_NEARBY; i++)
             {
@@ -155,11 +154,11 @@ namespace Minesweeper.Board
                 int newCol = col + deltaColumn[i];
 
                 if (newRow >= 0 && 
-                    newRow < height && 
+                    newRow < rows && 
                     newCol >= 0 && 
-                    newCol < width)
+                    newCol < cols)
                 {
-                    var index = newRow * width + newCol;
+                    var index = newRow * cols + newCol;
                     list.Add(index);
                 }              
             }
@@ -199,7 +198,7 @@ namespace Minesweeper.Board
 
         private Cell[] CreateNewCells()
         {
-            var size = width * height;
+            var size = cols * rows;
             Cell[] cells = new Cell[size];
             
             for (int i = 0; i < size; i++)

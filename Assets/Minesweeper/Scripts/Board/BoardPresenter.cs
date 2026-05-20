@@ -34,16 +34,16 @@ namespace Minesweeper.Board
             this.cellVisualConfig = cellVisualConfig;
         }
 
-        public void Initialize(int width, int height, int mines)
+        public void Initialize(int rows, int columns, int mines)
         {
             CleanupCells();
 
-            service.Setup(width, height, mines);
-            boardView.SetupGrid(width, height);
+            service.Setup(rows, columns, mines);
+            boardView.SetupGrid(rows, columns);
 
             Sprite closedStateSprite = cellVisualConfig.GetSprite(CellState.Closed);
             Transform cellParent = boardView.Root;
-            int cellsAmount = width * height;
+            int cellsAmount = rows * columns;
             cellViews = new CellView[cellsAmount];
 
             for (int i = 0; i < cellsAmount; i++)
