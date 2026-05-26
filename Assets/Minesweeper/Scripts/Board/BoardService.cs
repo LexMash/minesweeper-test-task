@@ -1,4 +1,5 @@
 ﻿using Minesweeper.Randomizer;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using UnityEngine.Pool;
@@ -18,6 +19,7 @@ namespace Minesweeper.Board
         private readonly List<CellOpenResult> openResults = new(16);
 
         private readonly ICellShuffler shuffler;
+        private readonly Stack<int> cellIndexes = new(32);
 
         private Cell[] cells;     
         private int cols;
@@ -67,25 +69,58 @@ namespace Minesweeper.Board
             shuffler.Shuffle(cells);
         }
 
-        public IReadOnlyList<CellOpenResult> OpenCell(int cellIndex)
+        public IReadOnlyList<CellOpenResult> OpenCell(int clickedCellIndex)
         {
             openResults.Clear();
+            cellIndexes.Clear();
+            var nearList = listPool.Get();
 
-            ref var cell = ref cells[cellIndex];
-            cell.State = CellState.Opened;
+            do
+            {
+                ref var cell = ref cells[clickedCellIndex];
+                cell.State = CellState.Opened;
+                openedCells.Add(clickedCellIndex);
 
-            openedCells.Add(cellIndex);
-            
-            List<int> nearbyCells = listPool.Get();
-            SetNearbyCellsToList(cellIndex, nearbyCells);
-            var minesNearby = CountNearbyMines(nearbyCells);
+                int row = clickedCellIndex / cols;
+                int col = clickedCellIndex % cols;
+                int mineCounter = 0;
 
-            openResults.Add(new CellOpenResult(cellIndex, minesNearby));
+                for (int i = 0; i < MAX_CELLS_NEARBY; i++)
+                {
+                    int newRow = row + deltaRow[i];
+                    int newCol = col + deltaColumn[i];
 
-            if (minesNearby == 0)
-                OpenAllFreeCellsNearby(nearbyCells);
+                    if (newRow >= 0 &&
+                        newRow < rows &&
+                        newCol >= 0 &&
+                        newCol < cols)
+                    {
+                        var index = newRow * cols + newCol;
+                        Cell cellN = cells[index];
+                        
+                        if (cellN.HasMine)
+                            mineCounter++;
+                        else if (cellN.State != CellState.Opened)
+                            nearList.Add(index);
+                    }
+                }
 
-            listPool.Release(nearbyCells);
+                openResults.Add(new CellOpenResult(clickedCellIndex, mineCounter));
+
+                if (mineCounter == 0)
+                {
+                    for (int i = 0; i < nearList.Count; i++)
+                    {
+                        var nc = nearList[i];
+                        cellIndexes.Push(nc);
+                    }                  
+                }
+
+                nearList.Clear();
+            }
+            while (cellIndexes.TryPop(out clickedCellIndex));
+
+            listPool.Release(nearList);
 
             return openResults;
         }
