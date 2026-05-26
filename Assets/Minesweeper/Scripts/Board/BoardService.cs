@@ -1,7 +1,6 @@
 ﻿using Minesweeper.Randomizer;
 using System;
 using System.Collections.Generic;
-using UnityEngine.Pool;
 
 namespace Minesweeper.Board
 {
@@ -13,7 +12,7 @@ namespace Minesweeper.Board
         private static readonly int[] deltaRow =    { -1, -1, -1, 0, 0, 1, 1, 1 };
         private static readonly int[] deltaColumn = { -1, 0, 1, -1, 1, -1, 0, 1 };
 
-        private readonly ObjectPool<List<int>> listPool;
+        private readonly List<int> nearIndexes = new(8);
         private readonly HashSet<int> openedCells = new(32);
         private readonly List<CellOpenResult> openResults = new(16);
 
@@ -27,14 +26,6 @@ namespace Minesweeper.Board
 
         public BoardService(ICellShuffler shuffler)
         {
-            listPool = new ObjectPool<List<int>>(
-                    createFunc: () => new List<int>(8),
-                    actionOnGet: (instance) => instance.Clear(),
-                    actionOnRelease: null,
-                    actionOnDestroy: (instance) => instance.Clear(),
-                    false,
-                    4);
-
             this.shuffler = shuffler;
         }
 
@@ -51,7 +42,6 @@ namespace Minesweeper.Board
 
         public void Dispose()
         {
-            listPool.Dispose();
             cells = null;
         }
 
@@ -72,7 +62,7 @@ namespace Minesweeper.Board
         {
             openResults.Clear();
             cellQueue.Clear();
-            var nearIndexes = listPool.Get();
+            nearIndexes.Clear();
 
             cellQueue.Enqueue(targetCellIndex);
             openedCells.Add(targetCellIndex);
@@ -124,8 +114,6 @@ namespace Minesweeper.Board
 
                 nearIndexes.Clear();
             }
-
-            listPool.Release(nearIndexes);
 
             return openResults;
         }
