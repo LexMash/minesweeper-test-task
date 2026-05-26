@@ -1,5 +1,4 @@
 ﻿using Minesweeper.Randomizer;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using UnityEngine.Pool;
@@ -19,7 +18,7 @@ namespace Minesweeper.Board
         private readonly List<CellOpenResult> openResults = new(16);
 
         private readonly ICellShuffler shuffler;
-        private readonly Stack<int> cellIndexes = new(32);
+        private readonly Queue<int> cellQueue = new(32);
 
         private Cell[] cells;     
         private int cols;
@@ -69,20 +68,22 @@ namespace Minesweeper.Board
             shuffler.Shuffle(cells);
         }
 
-        public IReadOnlyList<CellOpenResult> OpenCell(int clickedCellIndex)
+        public IReadOnlyList<CellOpenResult> OpenCell(int targetCellIndex)
         {
             openResults.Clear();
-            cellIndexes.Clear();
-            var nearList = listPool.Get();
+            cellQueue.Clear();
+            var nearIndexes = listPool.Get();
 
-            do
+            cellQueue.Enqueue(targetCellIndex);
+            openedCells.Add(targetCellIndex);
+
+            while (cellQueue.TryDequeue(out int cellIndex))
             {
-                ref var cell = ref cells[clickedCellIndex];
-                cell.State = CellState.Opened;
-                openedCells.Add(clickedCellIndex);
+                ref var cell = ref cells[cellIndex];
+                cell.State = CellState.Opened;        
 
-                int row = clickedCellIndex / cols;
-                int col = clickedCellIndex % cols;
+                int row = cellIndex / cols;
+                int col = cellIndex % cols;
                 int mineCounter = 0;
 
                 for (int i = 0; i < MAX_CELLS_NEARBY; i++)
@@ -100,27 +101,31 @@ namespace Minesweeper.Board
                         
                         if (cellN.HasMine)
                             mineCounter++;
-                        else if (cellN.State != CellState.Opened)
-                            nearList.Add(index);
+                        else if (cellN.State == CellState.Closed)
+                            nearIndexes.Add(index);
                     }
                 }
 
-                openResults.Add(new CellOpenResult(clickedCellIndex, mineCounter));
+                openResults.Add(new CellOpenResult(cellIndex, mineCounter));
 
                 if (mineCounter == 0)
                 {
-                    for (int i = 0; i < nearList.Count; i++)
+                    var count = nearIndexes.Count;
+                    for (int i = 0; i < count; i++)
                     {
-                        var nc = nearList[i];
-                        cellIndexes.Push(nc);
+                        var ni = nearIndexes[i];
+                        if (!openedCells.Contains(ni))
+                        {
+                            openedCells.Add(ni);
+                            cellQueue.Enqueue(ni);
+                        }   
                     }                  
                 }
 
-                nearList.Clear();
+                nearIndexes.Clear();
             }
-            while (cellIndexes.TryPop(out clickedCellIndex));
 
-            listPool.Release(nearList);
+            listPool.Release(nearIndexes);
 
             return openResults;
         }
