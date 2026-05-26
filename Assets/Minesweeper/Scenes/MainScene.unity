@@ -1009,6 +1009,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 1
+  m_UseReflectionProbes: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -1799,9 +1800,9 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
-  fitType: 3
+  fitType: 5
   rows: 9
-  columns: 0
+  columns: 1
   cellSize: {x: 40, y: 40}
   spacing: {x: 0, y: 0}
   fitX: 0
