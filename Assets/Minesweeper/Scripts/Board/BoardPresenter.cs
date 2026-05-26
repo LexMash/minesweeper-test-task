@@ -88,7 +88,7 @@ namespace Minesweeper.Board
                         return;
 
                     HandleFirstClick(cell, index);
-                    HandleCellClick(index);
+                    HandleCellClick(cell, index);
                     break;
 
                 case MouseClickType.Right:
@@ -135,10 +135,8 @@ namespace Minesweeper.Board
             }
         }
 
-        private void HandleCellClick(int index)
+        private void HandleCellClick(Cell cell, int index)
         {
-            Cell cell = service.GetCell(index);
-
             if (cell.State == CellState.Opened)
                 return;
 
@@ -185,7 +183,6 @@ namespace Minesweeper.Board
         private void OpenCells(int index)
         {
             IReadOnlyList<CellOpenResult> results = service.OpenCell(index);
-
             int count = results.Count;
             for (int i = 0; i < count; i++)
             {
